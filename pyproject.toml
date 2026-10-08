@@ -1,0 +1,22 @@
+[project]
+name = "fyp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "SanketJawali", email = "135835658+SanketJawali@users.noreply.github.com" }
+]
+requires-python = "==3.10.6"
+dependencies = [
+    "matplotlib>=3.10.9",
+    "mininet>=2.3.0.dev6",
+    "networkx>=3.4.2",
+    "os-ken>=4.2.2",
+]
+
+[project.scripts]
+fyp = "fyp:main"
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
