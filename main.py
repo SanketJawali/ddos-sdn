@@ -1,8 +1,10 @@
 from visualizer import visualize_topology
-from controller import Controller
+from controller import SimpleController
+
+import subprocess
 
 from mininet.net import Mininet
-from mininet.node import OVSSwitch
+from mininet.node import RemoteController, OVSSwitch
 from mininet.topo import Topo
 
 class Topo(Topo):
@@ -27,20 +29,36 @@ class Topo(Topo):
 topo = Topo()
 visualize_topology(topo)
 
-net = Mininet(
-    topo=Topo(),
-    switch=OVSSwitch
-)
+def start_controller():
+    return subprocess.Popen([
+        "python3",
+        "controller_runner.py",
+    ])
 
-c0 = net.addController(
-    "c0",
-    controller=Controller,
-    ip="127.0.0.1",
-    port=6653
-)
 
-net.start()
+controller_process = start_controller()
 
-net.pingAll()
+try:
+    net = Mininet(
+        topo=Topo(),
+        controller=None
+    )
 
-net.stop()
+    net.addController(
+        "c0",
+        controller=RemoteController,
+        ip="127.0.0.1",
+        port=6653
+    )
+
+    net.start()
+
+    net.pingAll()
+
+    input("Press Enter to stop...\n")
+
+finally:
+    net.stop()
+
+    controller_process.terminate()
+    controller_process.wait()
